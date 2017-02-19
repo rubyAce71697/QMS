@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>GMAC SignUp</title>
+    </head>
+
+
+    <body>
+        <h3>Registration with QMS</h3>
+
+        {% if registered %}
+        <strong>Thank You for Registering </strong>
+        
+        {% else %}
+
+        <form id-'user_form' method="POST" action = '/quiz/register/' enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.as_p}}
+            
+
+            <input type='submit' name = 'Register' value='Register' />
+            <a href="/quiz/">Login</a>
+            
+        </form>
+
+        {% endif %}
+
+    </body>
+</html>

@@ -1,0 +1,42 @@
+
+<html>
+  <head>
+    <title>
+      QMS - Login
+
+    </title>
+    <style>
+      table {
+          border-collapse: 5 px;
+          width: 25%;
+          border-radius: 25 px;
+      }
+
+      th, td {
+          text-align: center;
+          padding: 8px;
+      }
+
+      tr{background-color: #f2f2f2}
+
+      th {
+          background-color: #4CAF50;
+          color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <table align='center'>
+    <form method="post">
+      {% csrf_token %}
+      <tr><th>Sign In</th></tr>
+      <tr><td>{{ form.as_p }}</td></tr>
+      <tr><td><button type="submit">Login</button><a href="/quiz/register/">Register</a><td></tr>
+
+    
+    </form>
+      </table>
+  </body>
+  </html>
+

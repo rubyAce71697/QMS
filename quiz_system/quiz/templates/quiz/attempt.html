@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>
+            Answers
+        </title>
+        <style>
+            table {
+                border-collapse: 5 px;
+                width: 100%;
+                border-radius: 25 px;
+            }
+
+            th, td {
+                text-align: center;
+                padding: 8px;
+            }
+
+            tr{background-color: #f2f2f2}
+
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+            <table style="width:100%; border: none; background-color: white;">
+                <tr style="border: none; background-color: white ">
+                    <td style="border: none; background-color: white; text-align:left; ">Hi {{ user.username }} - This is the your attempt  </td>
+                    <td style="border: none; background-color: white; text-align:right; "><a href="{% url 'logout' %}"> Logout </a></td>
+                </tr>
+            </table>
+            <hr>
+            
+            <br>
+            <br>
+        <table>
+        <form method="POST" action="{% url 'submit' quiz_id %}" id='quizform'>
+            {% csrf_token %}
+        {% for i in quiz %}
+            <tr style="background-color: #4CAF50;text-align: left" ><td colspan="5" style="text-align: left">Q{{forloop.counter }}. {{ i.question }}</td></tr>
+            <tr ><td><input type="radio" name="{{i.id}}" value="{{ i.choice_1 }}"> {{ i.choice_1 }}</td>
+              <td><input type="radio" name="{{i.id}}" value="{{ i.choice_2 }}">{{ i.choice_2 }}</td>
+              <td><input type="radio" name="{{i.id}}" value="{{ i.choice_3 }}">{{ i.choice_3 }}</td>
+              <td><input type="radio" name="{{i.id}}" value="{{ i.choice_4 }}"> {{ i.choice_4 }}</td>
+            </tr>
+
+            
+        {% endfor %}
+            <tr><td colspan="4" style="text-align: left"> <input type="submit" value="Submit" form='quizform'></input></td></tr>
+        </form>
+
+
+        {% else %}
+            <h2> Please login</h2>
+            <a href="{% url 'login' %}"> Login </a>
+        {% endif %}
+
+
+    </body>
+</html>
