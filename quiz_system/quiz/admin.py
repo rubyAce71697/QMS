@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from django.conf.urls import url
 
 # Register your models here.
-from .models import StudentProfile,QuizInfo,QuizQuestions,StudentQuizAttempts,StudentResponses
+from .models import StudentProfile,QuizInfo,QuizQuestions,StudentQuizAttempts,StudentResponses,TeacherProfile,TeacherS
 from django.contrib.auth.models import User
 #from .forms import QuizQuestionAdminForm
 
 admin.site.register(StudentProfile)
 admin.site.register(StudentQuizAttempts)
 admin.site.register(StudentResponses)
+admin.site.register(TeacherProfile)
 
 
 
@@ -37,6 +38,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 admin.site.register(QuizInfo,QuizInfoAdmin)
 admin.site.register(QuizQuestions, QuizQuestionsAdmin)
+admin.site.register(TeacherS)
 #admin.site.register(QuizQuestions)
 
 

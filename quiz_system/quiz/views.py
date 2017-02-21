@@ -5,7 +5,8 @@ from django.shortcuts import render,HttpResponseRedirect,get_list_or_404,reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm,UserLoginForm
-from .models import StudentProfile,StudentQuizAttempts,StudentResponses,QuizInfo,QuizQuestions
+from .models import StudentProfile,StudentQuizAttempts,StudentResponses,QuizInfo,QuizQuestions,TeacherS
+from .models import TeacherProfile
 from django.contrib.auth import login, logout,authenticate
 from datetime import datetime
 
@@ -33,30 +34,52 @@ def register(request):
 @login_required(login_url="/quiz/")
 def home(request):
     #show the test attempted
-    quiz_attempted = StudentQuizAttempts.objects.filter(student_id = request.user.id)
-    print quiz_attempted
-    for i in quiz_attempted:
-        print i.quiz
 
-    quiz_remaining = QuizInfo.objects.all().exclude(id__in=quiz_attempted.values('quiz_id') ).filter(quizDate__lte=datetime.today())
-    print quiz_remaining.values()
-    quiz_tobestarted = QuizInfo.objects.all().exclude(id__in=quiz_attempted.values('quiz_id') ).filter(quizDate__gt=datetime.today())
-    print quiz_tobestarted.values()
+    #check if user is student
+    if not request.user.is_staff:
+        
+        quiz_attempted = StudentQuizAttempts.objects.filter(student_id = request.user.id)
+        print quiz_attempted
+        for i in quiz_attempted:
+            print i.quiz
+
+        quiz_remaining = QuizInfo.objects.all().exclude(id__in=quiz_attempted.values('quiz_id') ).filter(quizDate__lte=datetime.today())
+        print quiz_remaining.values()
+        quiz_tobestarted = QuizInfo.objects.all().exclude(id__in=quiz_attempted.values('quiz_id') ).filter(quizDate__gt=datetime.today())
+        print quiz_tobestarted.values()
 
 
+       
+        context['quiz_attempts'] = quiz_attempted
+        context['quiz_remaining'] = quiz_remaining
+        context['quiz_tobestarted'] = quiz_tobestarted
+        
+
+    else:
+        # the user is teacher
+        print request.user.username
+        teacher_username = TeacherProfile.objects.all().filter(teacher_id=request.user).first()
+        print dir(teacher_username.id)
+        student_ids = TeacherS.objects.all().filter(teacher_id = teacher_username.id)
+        print student_ids
+        student_profile_id = StudentProfile.objects.all().filter(id__in=student_ids.values('student_id'))
+        print student_profile_id
+        user_id = User.objects.select_related().filter(id__in=student_profile_id)
+        for i in user_id:
+            print i.__dict__
     context = {}
     context['user'] = request.user
-    context['quiz_attempts'] = quiz_attempted
-    context['quiz_remaining'] = quiz_remaining
-    context['quiz_tobestarted'] = quiz_tobestarted
+    context['students'] = user_id
     template_url = 'quiz/home.html'
+
+
     return render(request,template_url,context )
 
 
 @login_required(login_url="/quiz/")
 def attempt(request, test_id):
     quiz_questions = get_list_or_404(QuizQuestions, quiz_id=test_id)
-    print quiz_questions
+    print dir(quiz_questions)
     quiz_id = test_id
     return render(request, 'quiz/attempt.html', {'quiz': quiz_questions, 'quiz_id':test_id})
 
@@ -123,6 +146,7 @@ def user_login(request):
     if request.method == 'POST':
           username = request.POST['username']
           password = request.POST['password']
+          
           user = authenticate(username=username, password=password)
           if user is not None:
               if user.is_active:

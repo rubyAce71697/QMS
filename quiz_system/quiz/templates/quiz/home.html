@@ -32,49 +32,72 @@
     </style>
     <body>
         {% if user.is_authenticated %}
-            <table style="width:100%; border: none; background-color: white;">
-                <tr style="border: none; background-color: white ">
-                    <td style="border: none; background-color: white; text-align:left; ">Hi {{ user.username }} - Here is your Leaderboard </td>
-                    <td style="border: none; background-color: white; text-align:right; "><a href="{% url 'logout' %}"> Logout </a></td>
-                </tr>
-            </table>
-            <hr>
-            
-            <br>
-            <br>
-            <table align='center'>
-                <caption>Quizes attempted till Now</caption>    
-                <tr ><th> Quiz </th><th>Score</th><th>Attempted Date</th></tr>
-            {% for i in quiz_attempts %}
-                <tr><td>{{ i.quiz }}&emsp;&emsp;<a href="{% url 'detail' i.quiz_id %}">View</td><td>{{ i.score }}<td>{{ i.attempt_date }}</td></tr>
-
-
-            {% endfor %}
-            </table >
-            <hr>
-             <br>
-            <br>
-            <table align='center'>
-                <caption>Quizes that are yet to be attempted</caption>    
-                <tr ><th> Quiz </th><th>Commencement Date</th></tr>
-                {% for i in quiz_remaining %}
-                    <tr><td>{{ i.quiz_title }}&emsp;&emsp;<a href="{% url 'attempt' i.id %}">Attempt</td><td>{{ i.quizDate }}</td></tr>
+            {% if not user.is_staff %}
+                <table style="width:100%; border: none; background-color: white;">
+                    <tr style="border: none; background-color: white ">
+                        <td style="border: none; background-color: white; text-align:left; ">Hi {{ user.username }} - Here is your Leaderboard </td>
+                        <td style="border: none; background-color: white; text-align:right; "><a href="{% url 'logout' %}"> Logout </a></td>
+                    </tr>
+                </table>
+                <hr>
+                
+                <br>
+                <br>
+                <table align='center'>
+                    <caption>Quizes attempted till Now</caption>    
+                    <tr ><th> Quiz </th><th>Score</th><th>Attempted Date</th></tr>
+                {% for i in quiz_attempts %}
+                    <tr><td>{{ i.quiz }}&emsp;&emsp;<a href="{% url 'detail' i.quiz_id %}">View</td><td>{{ i.score }}<td>{{ i.attempt_date }}</td></tr>
 
 
                 {% endfor %}
-            </table >
-            <hr>
-             <br>
-            <br>
-            <table align='center'>
-                <caption>Quizes that are yet to be started</caption>    
-                <tr ><th> Quiz </th><th>Commencement Date</th></tr>
-                {% for i in quiz_tobestarted %}
-                    <tr><td>{{ i.quiz_title }}</td><td>{{ i.quizDate }}</td></tr>
+                </table >
+                <hr>
+                <br>
+                <br>
+                <table align='center'>
+                    <caption>Quizes that are yet to be attempted</caption>    
+                    <tr ><th> Quiz </th><th>Commencement Date</th></tr>
+                    {% for i in quiz_remaining %}
+                        <tr><td>{{ i.quiz_title }}&emsp;&emsp;<a href="{% url 'attempt' i.id %}">Attempt</td><td>{{ i.quizDate }}</td></tr>
+
+
+
+                    {% endfor %}
+                </table >
+                <hr>
+                <br>
+                <br>
+                <table align='center'>
+                    <caption>Quizes that are yet to be started</caption>    
+                    <tr ><th> Quiz </th><th>Commencement Date</th></tr>
+                    {% for i in quiz_tobestarted %}
+                        <tr><td>{{ i.quiz_title }}</td><td>{{ i.quizDate }}</td></tr>
+
+
+                    {% endfor %}
+                </table >
+            {% else %}
+                <table style="width:100%; border: none; background-color: white;">
+                    <tr style="border: none; background-color: white ">
+                        <td style="border: none; background-color: white; text-align:left; ">Hi {{ user.username }} - Here is your Stats </td>
+                        <td style="border: none; background-color: white; text-align:right; "><a href="{% url 'logout' %}"> Logout </a></td>
+                    </tr>
+                </table>
+                <hr>
+                <br>
+                <br>
+                <table align='center'>
+                <caption>your students</caption>    
+                <tr><th>Username</th><th>Name</th><th>Date of Joining</th>
+                {% for i in students %}
+                    <tr><td>{{ i.username.upper }}&emsp;&emsp;</td><td>{{ i.first_name }} {{ i.last_name}}</td><td>{{ i.date_joined.date }}</td></tr>
 
 
                 {% endfor %}
-            </table >
+                
+            {% endif %}
+
             
         {% else %}
             <h2> Please login</h2>
