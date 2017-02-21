@@ -5,7 +5,7 @@ Work in progress
 ----------------
 
 TO DO
-* Teacher View -- performance of the students remaining
+* serialize
 * Student Profile
 
 Currently Working (Buggy)
@@ -18,3 +18,4 @@ Currently Working (Buggy)
 * If a teacher login, the teachers home page will be displayed
 * Similary if student logs in, the student homepage will be displayed
 * Currently the differentiation is based on the 'is_staff' attribute of auth_user table
+* Teacher View -- performance of the students remaining

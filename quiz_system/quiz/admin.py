@@ -25,10 +25,12 @@ class QuizInfoAdmin(admin.ModelAdmin):
 
 class QuizQuestionsAdmin(admin.ModelAdmin):
     #form = QuizQuestionAdminForm
+    
     list_display = ['question','choice_1','choice_2','choice_3','choice_4', 'quiz','isMultipleChoice']
     ordering = ['quiz']
     #fields = ('your_name',)
     #actions = []
+    
 
 
 class TeacherSAdmin(admin.ModelAdmin):
