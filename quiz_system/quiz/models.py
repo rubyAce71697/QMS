@@ -15,6 +15,9 @@ class StudentProfile(models.Model):
     doj = models.DateField(default = datetime.date.today, blank=True, null=True)
 
 
+    def __unicode__(self):
+        return self.student.username
+
 
 
 class QuizInfo(models.Model):
@@ -32,6 +35,7 @@ class StudentQuizAttempts(models.Model):
     quiz = models.ForeignKey(QuizInfo)
     attempt_date = models.DateField(default = datetime.date.today)
     score = models.PositiveSmallIntegerField(default = 0)
+
     
 
     class Meta:
@@ -67,16 +71,15 @@ class StudentResponses(models.Model):
         unique_together = (('student','quiz','question'),)
     
         def __unicode__(self):
-            return '{} {} {}'.format(student,quit,question)
+            return '{} {} {}'.format(student,quiz,question)
 
 class TeacherProfile(models.Model):
     teacher = models.ForeignKey(User,to_field='username')
     doj = models.DateField(default = datetime.date.today, blank=True, null=True)
 
-    class Meta:
-        def __unicode__(self):
-            return self.teacher
 
+    def __unicode__(self):
+        return self.teacher.first_name
 
 class TeacherS(models.Model):
     teacher = models.ForeignKey(TeacherProfile)
@@ -84,6 +87,4 @@ class TeacherS(models.Model):
 
     class Meta:
         unique_together = (('teacher','student' ),)
-        def __unicode__(self):
-            return "{}:{}".format(self.teacher, self.student)
-
+   

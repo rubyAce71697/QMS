@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 admin.site.register(StudentProfile)
 admin.site.register(StudentQuizAttempts)
 admin.site.register(StudentResponses)
-admin.site.register(TeacherProfile)
+#admin.site.register(TeacherProfile)
 
 
 
@@ -29,16 +29,21 @@ class QuizQuestionsAdmin(admin.ModelAdmin):
     ordering = ['quiz']
     #fields = ('your_name',)
     #actions = []
-"""
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ['title', 'completed']
-    ordering = ['created']
-    #actions = [complete_tasks, incomplete_tasks, all_tasks]
-"""
+
+
+class TeacherSAdmin(admin.ModelAdmin):
+    list_display = ['teacher','student']
+
+class TeacherProfileAdmin(admin.ModelAdmin):
+    list_display = ['teacher','doj']
+
+
 
 admin.site.register(QuizInfo,QuizInfoAdmin)
 admin.site.register(QuizQuestions, QuizQuestionsAdmin)
-admin.site.register(TeacherS)
+admin.site.register(TeacherS,TeacherSAdmin)
+admin.site.register(TeacherProfile,TeacherProfileAdmin)
+
 #admin.site.register(QuizQuestions)
 
 
