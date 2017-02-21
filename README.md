@@ -5,7 +5,7 @@ Work in progress
 ----------------
 
 TO DO
-* Teacher View
+* Teacher View -- performance of the students remaining
 * Student Profile
 
 Currently Working (Buggy)
@@ -14,3 +14,7 @@ Currently Working (Buggy)
 * Stuedent can view all the unattempted Quizes
 * Student can only attempt those quizes that are of previous timings
 * Student can only see (not attempt) the quizes that are not yet started
+* Teachers can see the students he teaches
+* If a teacher login, the teachers home page will be displayed
+* Similary if student logs in, the student homepage will be displayed
+* Currently the differentiation is based on the 'is_staff' attribute of auth_user table
