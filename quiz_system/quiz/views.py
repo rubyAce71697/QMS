@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponseRedirect,get_list_or_404,reverse,get_object_or_404
+from django.shortcuts import render,HttpResponseRedirect,get_list_or_404,reverse,get_object_or_404,HttpResponse
 
 # Create your views here.
 
@@ -9,6 +9,11 @@ from .models import StudentProfile,StudentQuizAttempts,StudentResponses,QuizInfo
 from .models import TeacherProfile
 from django.contrib.auth import login, logout,authenticate
 from datetime import datetime
+from rest_framework.views import APIView
+from rest_framework import status,response,generics
+from rest_framework.response import Response
+from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def register(request):
@@ -97,6 +102,72 @@ def home(request):
 
     return render(request,template_url,context )
 
+class QuizAttempts(LoginRequiredMixin,generics.ListCreateAPIView):
+    serializer_class = QuizAttemptsSerializer
+
+    def list(self,request,student_id):
+        queryset = self.get_queryset()
+        serializer = QuizAttemptsSerializer(queryset,many=True)
+        return Response(serializer.data)
+    def get_queryset(self):
+        student_profile_id = StudentProfile.objects.all().filter(id__in=self.kwargs['student_id'])
+        print student_profile_id
+        quiz_attempted = StudentQuizAttempts.objects.all().filter(student_id__in=student_profile_id)
+
+        return quiz_attempted
+
+    
+
+class Quizes(LoginRequiredMixin,generics.ListAPIView):
+    queryset = QuizInfo.objects.all()
+    serializer_class = QuizInfoSerializer
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = QuizInfoSerializer(queryset, many=True)
+        return Response(serializer.data)
+        
+
+
+class QuizQuestionsView(LoginRequiredMixin,generics.ListAPIView):
+    serializer_class = QuizQuestionsSerializer
+
+    def list(self,request,test_id):
+        queryset = self.get_queryset()
+        serializer = QuizQuestionsSerializer(queryset,many=True)
+        return Response(serializer.data)
+    def get_queryset(self):
+        return QuizQuestions.objects.all().filter(quiz_id=self.kwargs['test_id'])
+        
+
+
+class Home(LoginRequiredMixin,APIView):
+    def get(self,request,pk,format='json'):
+        if not request.user.is_staff:
+            quiz_attempted = StudentQuizAttempts.objects.filter(student_id = request.user.username)
+            print quiz_attempted
+            for i in quiz_attempted:
+                print i.quiz
+            return Response(status.HTTP_200_OK)
+
+        else:
+            return Response(status.HTTP_204_NO_CONTENT)
+        
+
+class UserAttempts(LoginRequiredMixin,APIView):
+
+    
+    login_url = '/quiz/login/'
+    def get(self,request,pk,format = 'json'):
+        #quiz_attempted = StudentQuizAttempts.objects.select_related().filter(student_id__in=student_profile_id)
+        #users = User.objects.all().filter(username=pk)
+        users = get_list_or_404(User, username=pk)
+        user = UserSerializer(users,many=True)
+        print user
+        print pk
+        #print quiz_attempted
+        return  Response(user.data)
+
 
 @login_required(login_url="/quiz/")
 def attempt(request, test_id):
@@ -165,7 +236,7 @@ def submit(request,test_id):
     print foo
     return HttpResponseRedirect(reverse('home'))
 
-
+"""
 def user_login(request):
     if request.method == 'POST':
           username = request.POST['username']
@@ -195,3 +266,32 @@ def user_login(request):
         context = {}
         context['form'] = UserLoginForm()
         return render(request,template_name,context)
+"""
+
+class UserLogin(APIView):
+    def get(self,request):
+        return Response(status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self,request,format = 'json'):
+        print request.data
+        username = request.data['username']
+        password = request.data['password']
+        user = authenticate(username=username,password=password)
+        if user is not None:
+            if user.is_active:
+                login(request,user)
+                
+
+                return Response(status.HTTP_200_OK)
+            else:
+                return Response(status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status.HTTP_404_NOT_FOUND)        
+
+
+            """
+            {
+"username":"rubyace71697",
+"password":"n15111993."
+}
+"""

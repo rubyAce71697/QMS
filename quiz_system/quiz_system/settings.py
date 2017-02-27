@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'registration',
+    'rest_framework',
     'django_extensions',
     
 ]
@@ -70,7 +71,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'quiz_system.wsgi.application'
 
 
