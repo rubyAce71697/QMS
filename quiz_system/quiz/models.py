@@ -18,8 +18,6 @@ class StudentProfile(models.Model):
     def __unicode__(self):
         return self.student.username
 
-
-
 class QuizInfo(models.Model):
     
     quiz_title = models.CharField(max_length = 100)

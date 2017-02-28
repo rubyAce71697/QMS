@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import TeacherS,TeacherProfile,QuizInfo,QuizQuestions,StudentQuizAttempts
+from .models import TeacherS,TeacherProfile,QuizInfo,QuizQuestions,StudentQuizAttempts,StudentProfile
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,6 +13,14 @@ class TeacherSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         fields = ('teacher','student')
+
+
+
+class StudentProfileSerializer(serializers.ModelSerializer):
+    student = UserSerializer(read_only=True)
+    class Meta:
+        model = StudentProfile
+        fields = '__all__'
 
 class QuizQuestionsSerializer(serializers.ModelSerializer):
     class Meta:

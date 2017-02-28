@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'registration',
     'rest_framework',
     'django_extensions',
+    'corsheaders'
     
 ]
 
@@ -52,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware'
 ]
 
 ROOT_URLCONF = 'quiz_system.urls'
@@ -133,4 +136,6 @@ LOGIN_REDIRECT_URL = 'home'
 REGISTRATION_OPEN = True                # If True, users can register
 REGISTRATION_AUTO_LOGIN = True  # If True, the user will be automatically logged in.
 #ACCOUNT_ACTIVATION_DAYS = 7
+
+CORS_ORIGIN_ALLOW_ALL = True
 

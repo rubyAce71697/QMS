@@ -3,7 +3,7 @@ from django.contrib import admin
 
 
 from django.contrib.auth import views as auth_views
-from .views import register,home,detail,attempt,submit, UserLogin,UserAttempts,Quizes,QuizQuestionsView,QuizAttempts
+from .views import register,home,detail,attempt,submit, UserLogin,UserAttempts,Quizes,QuizQuestionsView,QuizAttempts,StudentProfileView
 urlpatterns = [
     url(r'^register/$', register,name='register'),
     #url(r'^login/$',user_login,   name='login'),
@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^userattempts/(?P<pk>[A-Za-z0-9]+)/$',UserAttempts.as_view()),
     url(r'^quizes/',Quizes.as_view()),
     url(r'^quizquestions/(?P<test_id>[A-Za-z0-9]+)/$',QuizQuestionsView.as_view()),
-    url(r'^quizattempts/(?P<student_id>[A-Za-z0-9]+)/$',QuizAttempts.as_view())
+    url(r'^quizattempts/(?P<student_id>[A-Za-z0-9]+)/$',QuizAttempts.as_view()),
+    url(r'^profile/$',StudentProfileView.as_view())
 ]
 

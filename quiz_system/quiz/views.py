@@ -10,9 +10,10 @@ from .models import TeacherProfile
 from django.contrib.auth import login, logout,authenticate
 from datetime import datetime
 from rest_framework.views import APIView
+from rest_framework.fields import CurrentUserDefault
 from rest_framework import status,response,generics
 from rest_framework.response import Response
-from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer
+from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer,StudentProfileSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -102,7 +103,23 @@ def home(request):
 
     return render(request,template_url,context )
 
-class QuizAttempts(LoginRequiredMixin,generics.ListCreateAPIView):
+class StudentProfileView(generics.ListCreateAPIView):
+    serializer_class = StudentProfileSerializer
+
+    def list(self,request):
+        queryset = self.get_queryset()
+        serializer = StudentProfileSerializer(queryset)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        student_profile = StudentProfile.objects.get(student_id=self.request.user)
+        print self.request.user
+        print student_profile
+        return student_profile
+
+
+
+class QuizAttempts(generics.ListCreateAPIView):
     serializer_class = QuizAttemptsSerializer
 
     def list(self,request,student_id):
@@ -192,6 +209,9 @@ def detail(request, test_id):
     context['score'] = score
     print score.score
     return render(request, 'quiz/detail.html',context)
+
+
+
 
 @login_required(login_url="/quiz/")
 def submit(request,test_id):
@@ -289,8 +309,8 @@ class UserLogin(APIView):
             return Response(status.HTTP_404_NOT_FOUND)        
 
 
-            """
-            {
+"""
+{
 "username":"rubyace71697",
 "password":"n15111993."
 }
