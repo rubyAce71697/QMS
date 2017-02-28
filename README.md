@@ -4,9 +4,11 @@ Django Application to Manage Quizes for Annual Exam
 Work in progress
 ----------------
 
-TO DO
-* serialize
-* Student Profile
+Currently Working
+* Serialize (login,studentprofile, quizes, quizesattempted)
+
+TODO: 
+* Angular js templates
 
 Currently Working (Buggy)
 * Student View
@@ -19,3 +21,4 @@ Currently Working (Buggy)
 * Similary if student logs in, the student homepage will be displayed
 * Currently the differentiation is based on the 'is_staff' attribute of auth_user table
 * Teacher View -- performance of the students remaining
+
