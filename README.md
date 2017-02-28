@@ -6,9 +6,11 @@ Work in progress
 
 Currently Working
 * Serialize (login,studentprofile, quizes, quizesattempted)
+* Student response endpoing added, (only all the student resposes can be seen)
 
 TODO: 
 * Angular js templates
+* improvig Student Response View
 
 Currently Working (Buggy)
 * Student View
@@ -22,3 +24,8 @@ Currently Working (Buggy)
 * Currently the differentiation is based on the 'is_staff' attribute of auth_user table
 * Teacher View -- performance of the students remaining
 
+
+Final
+===========
+
+Write the whole application again
