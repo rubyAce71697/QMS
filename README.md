@@ -1,6 +1,9 @@
 # QMS
 Django Application to Manage Quizes for Annual Exam
 
+Please Check SERIALIZE branch
+----------------------------------------
+
 Work in progress
 ----------------
 
