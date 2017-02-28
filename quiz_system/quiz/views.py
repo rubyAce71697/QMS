@@ -14,6 +14,7 @@ from rest_framework.fields import CurrentUserDefault
 from rest_framework import status,response,generics
 from rest_framework.response import Response
 from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer,StudentProfileSerializer
+from serializers import StudentResponsesSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -117,7 +118,14 @@ class StudentProfileView(generics.ListCreateAPIView):
         print student_profile
         return student_profile
 
+class StudentResponsesSerializerView(generics.ListCreateAPIView):
+    serializer_class = StudentResponsesSerializer
+    queryset = StudentResponses.objects.all()
 
+    def list(self,request):
+        queryset = self.get_queryset()
+        serializer = StudentResponsesSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 class QuizAttempts(generics.ListCreateAPIView):
     serializer_class = QuizAttemptsSerializer
@@ -289,7 +297,7 @@ def user_login(request):
 """
 
 class UserLogin(APIView):
-    
+        
     def get(self,request):
         return Response(status.HTTP_501_NOT_IMPLEMENTED)
     

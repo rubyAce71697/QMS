@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import User
 from django import forms
 from .models import StudentProfile
+from django.utils import six
 
 
 class UserForm(forms.ModelForm):
@@ -18,6 +19,9 @@ class UserLoginForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+
 
 
 
