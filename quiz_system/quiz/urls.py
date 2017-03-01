@@ -4,15 +4,18 @@ from django.contrib import admin
 
 from django.contrib.auth import views as auth_views
 from .views import register,home,detail,attempt,submit, UserLogin,UserAttempts,Quizes,QuizQuestionsView,QuizAttempts,StudentProfileView
-from .views import StudentResponsesSerializerView
+from .views import StudentResponsesSerializerView,UserLogout,LoginTemplateView
+
+
 urlpatterns = [
+    
     url(r'^register/$', register,name='register'),
-    #url(r'^login/$',user_login,   name='login'),
-    #url(r'^$',user_login,  name='login'),
+    url(r'^$',LoginTemplateView.as_view(),   name='login_template'),
+    
     url(r'^login/$',UserLogin.as_view(),   name='login'),
 
     url(r'^home/',home ,name='home'),
-    url(r'^logout/$',auth_views.logout,  {'next_page':'/quiz/'}, name='logout'),
+    url(r'^logout/$',UserLogout.as_view()),
     url(r'^detail/(?P<test_id>[0-9]+)/$', detail, name='detail'),
     url(r'^attempt/(?P<test_id>[0-9]+)/$', attempt, name='attempt'),
     url(r'^attempt/(?P<test_id>[0-9]+)/submit$', submit, name='submit'),

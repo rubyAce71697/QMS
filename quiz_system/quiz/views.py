@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer,StudentProfileSerializer
 from serializers import StudentResponsesSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.base import TemplateView
 
 
 def register(request):
@@ -297,25 +298,59 @@ def user_login(request):
 """
 
 class UserLogin(APIView):
-        
+    context = dict()
     def get(self,request):
         return Response(status.HTTP_501_NOT_IMPLEMENTED)
     
     def post(self,request,format = 'json'):
         print request.data
+        if not 'username' in request.data or not 'password' in request.data:
+            self.context['status'] = 'failed'
+            self.context['error'] = "All fields are mandatory"
+            return Response(self.context)
         username = request.data['username']
         password = request.data['password']
+        print username
+        print password
+
         user = authenticate(username=username,password=password)
+        print user
         if user is not None:
             if user.is_active:
                 login(request,user)
                 
-
-                return Response(status.HTTP_200_OK)
+                self.context['status'] = 'success'
+                self.context['error'] = None
+                return Response(self.context)
             else:
-                return Response(status.HTTP_404_NOT_FOUND)
+                self.context['status'] = 'failed'
+                self.context['error'] = "Session Timed Out. Please login again"
+                return Response(self.context)
         else:
-            return Response(status.HTTP_404_NOT_FOUND)        
+            print "in else"
+            self.context['status'] = 'failed'
+            self.context['error'] = "Invaild username or password"
+            return Response(self.context)        
+
+
+class UserLogout(LoginRequiredMixin,APIView):
+    def get(self, request):
+        
+        if request.user.is_active:
+            logout(request)
+
+            return Response(status.HTTP_200_OK)
+        else:
+            
+            return Response(status.HTTP_400_BAD_REQUEST)
+
+
+
+class LoginTemplateView(TemplateView):
+    form_class = UserForm
+    template_name = 'quiz/login.html'
+
+
 
 
 """
