@@ -1,42 +1,43 @@
-
+<!Doctype html>
 <html>
-  <head>
-    <title>
-      QMS - Login
-
-    </title>
-    <style>
-      table {
-          border-collapse: 5 px;
-          width: 25%;
-          border-radius: 25 px;
-      }
-
-      th, td {
-          text-align: center;
-          padding: 8px;
-      }
-
-      tr{background-color: #f2f2f2}
-
-      th {
-          background-color: #4CAF50;
-          color: white;
-      }
-    </style>
-  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
   <body>
-    <h2>Login</h2>
-    <table align='center'>
-    <form method="post">
-      {% csrf_token %}
-      <tr><th>Sign In</th></tr>
-      <tr><td>{{ form.as_p }}</td></tr>
-      <tr><td><button type="submit">Login</button><a href="/quiz/register/">Register</a><td></tr>
+    <div ng-app='quiz' ng-controller="myCtrl">
+      <form name='loginform'>
+        Username: <input ng-model="username" type="text" required > 
+        <span ng-show="loginform.username.$touched && loginform.username.$invalid">User name is required</span>
+        <br>
+        Password: <input type="text" ng-model='password'  required>
+        <span ng-show="loginform.password.$touched && loginform.password.$invalid">User name is required</span>
+        <br>
+        <button ng-click="submit()">Login</button>
 
+        {% verbatim %} {{ status }} {% endverbatim %}
+
+      </form>
+    </div>
     
-    </form>
-      </table>
+    <script>
+      var app = angular.module('quiz', []);
+      app.controller('myCtrl',function($scope,$http){
+        $scope.submit = function(){
+          console.log('clicked');
+          console.log($scope.username)
+          var login_obj = {
+            "username": $scope.username,
+            "password": $scope.password
+          };
+          var res = $http.post('login/',login_obj);
+          res.success(function(data, status, headers, config) {
+	          $scope.status = status;
+	      	});
+	      	res.error(function(data, status, headers, config) {
+	      		alert( "failure message: " + JSON.stringify({data: status}));
+	      	});		
+          console.log(login_obj)
+        }
+        
+      });
+    </script>
   </body>
-  </html>
-
+</html>
