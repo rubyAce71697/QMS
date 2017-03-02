@@ -302,6 +302,7 @@ class UserLogin(APIView):
     def get(self,request):
         return Response(status.HTTP_501_NOT_IMPLEMENTED)
     
+    
     def post(self,request,format = 'json'):
         print request.data
         if not 'username' in request.data or not 'password' in request.data:
@@ -319,16 +320,17 @@ class UserLogin(APIView):
             if user.is_active:
                 login(request,user)
                 
-                self.context['status'] = 'success'
+                self.context['status'] = "success"
                 self.context['error'] = None
                 return Response(self.context)
+                #return reverse('home')
             else:
-                self.context['status'] = 'failed'
+                self.context['status'] = "failed"
                 self.context['error'] = "Session Timed Out. Please login again"
                 return Response(self.context)
         else:
             print "in else"
-            self.context['status'] = 'failed'
+            self.context['status'] = "failed"
             self.context['error'] = "Invaild username or password"
             return Response(self.context)        
 
@@ -349,6 +351,10 @@ class UserLogout(LoginRequiredMixin,APIView):
 class LoginTemplateView(TemplateView):
     form_class = UserForm
     template_name = 'quiz/login.html'
+
+class HomeTemplateView(TemplateView):
+    def get(self,request):
+        return render(request,'quiz/home.html')
 
 
 

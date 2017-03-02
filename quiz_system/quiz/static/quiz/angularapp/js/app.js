@@ -1,26 +1,14 @@
-var module = angular.module("sampleApp", ['ngRoute']);
-module.config(function ($interpolateProvider) {
-    $interpolateProvider.startSymbol('[[').endSymbol(']]');
-})
-module.config(['$routeProvider',
-    function($routeProvider) {
-        $routeProvider.
-            when('/route1', {
-                templateUrl: static_url + 'angularapp/html/test1.html',
-                controller: 'RouteController1'
-            }).
-            when('/route2', {
-                templateUrl: static_url + 'angularapp/html/test2.html',
-                controller: 'RouteController2'
-            }).
-            otherwise({
-                redirectTo: '/'
-            });
-    }]);
+var routeApp = angular.module('routeApp',[ui.router]);
 
-module.controller("RouteController1", function($scope) {
-    $scope.test="Thisorking test1"
-});
-module.controller("RouteController2", function($scope) {
-    $scope.test="Thisorking test2"
-});
+routerApp.config(function($stateProvider, $urlRouterProvider){
+
+    $urlRouterProvider.otherwise('/home')
+
+    $stateProvider
+
+        .state(home,{
+            url: 'quiz/login',
+            templateUrl: 'quiz/login.html'
+        })
+        
+})

@@ -4,6 +4,7 @@
   <body>
     <div ng-app='quiz' ng-controller="myCtrl">
       <form name='loginform'>
+        
         Username: <input ng-model="username" type="text" required > 
         <span ng-show="loginform.username.$touched && loginform.username.$invalid">User name is required</span>
         <br>
@@ -19,8 +20,11 @@
     
     <script>
       var app = angular.module('quiz', []);
-      app.controller('myCtrl',function($scope,$http){
+      app.controller('myCtrl',function($scope,$window,$http){
         $scope.submit = function(){
+                  $http.defaults.xsrfCookieName = 'csrftoken';
+        $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+
           console.log('clicked');
           console.log($scope.username)
           var login_obj = {
@@ -30,6 +34,13 @@
           var res = $http.post('login/',login_obj);
           res.success(function(data, status, headers, config) {
 	          $scope.status = status;
+            console.log(data['status'])
+            if ( data['status'] == 'success')
+            {
+              console.log('changing view to home')
+              $window.location.href = 'home'
+              $window.location.href;
+            }
 	      	});
 	      	res.error(function(data, status, headers, config) {
 	      		alert( "failure message: " + JSON.stringify({data: status}));
