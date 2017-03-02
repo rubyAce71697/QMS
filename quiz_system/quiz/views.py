@@ -186,13 +186,20 @@ class UserAttempts(LoginRequiredMixin,APIView):
     login_url = '/quiz/login/'
     def get(self,request,pk,format = 'json'):
         #quiz_attempted = StudentQuizAttempts.objects.select_related().filter(student_id__in=student_profile_id)
-        #users = User.objects.all().filter(username=pk)
-        users = get_list_or_404(User, username=pk)
-        user = UserSerializer(users,many=True)
-        print user
         print pk
-        #print quiz_attempted
-        return  Response(user.data)
+        quiz_attempted = get_list_or_404(StudentQuizAttempts,student=pk)
+        #users = User.objects.all().filter(username=pk)
+        #users = get_list_or_404(User, username=pk)
+        #user = UserSerializer(users,many=True)
+        #print user
+        quizes = QuizAttemptsSerializer(quiz_attempted,many=True)
+
+        print quiz_attempted
+        print quizes
+        print pk
+        print quizes
+        print quizes.data
+        return  Response(quizes.data)
 
 
 @login_required(login_url="/quiz/")
