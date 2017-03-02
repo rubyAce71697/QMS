@@ -47,7 +47,8 @@ class QuizInfoSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','quiz_title','quizDate','quizTime')
 
 class QuizAttemptsSerializer(serializers.ModelSerializer):
+    quiz =QuizInfoSerializer(read_only=True)
     class Meta:
         model = StudentQuizAttempts
-        fields = ('id','quiz','attempt_date','score')
+        fields = ('quiz','attempt_date','score')
 
