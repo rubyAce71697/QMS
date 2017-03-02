@@ -1,21 +1,77 @@
 <!Doctype html>
 <html>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!-- CSS (load bootstrap) -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+        .navbar { border-radius:0; }
+    </style>
+
+    <!-- JS (load angular, ui-router, and our custom js file) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+
   <body>
     <div ng-app='quiz' ng-controller="myCtrl">
-      <form name='loginform'>
-        
-        Username: <input ng-model="username" type="text" required > 
-        <span ng-show="loginform.username.$touched && loginform.username.$invalid">User name is required</span>
-        <br>
-        Password: <input type="text" ng-model='password'  required>
-        <span ng-show="loginform.password.$touched && loginform.password.$invalid">User name is required</span>
-        <br>
-        <button ng-click="submit()">Login</button>
+      <div class="row">
+        <div class="col-sm-8 container">
+          <h1> QMS <small>Quiz Management System</small> </h1>
+          <br>
+          <br>
+        </div>
+      </div>
+      <div class="row">
 
-        {% verbatim %} {{ status }} {% endverbatim %}
+      <div class='col-sm-6'>
+        <form name='registrationform'>
+          <div class"form-group">
+            <label for="username">Username*</label>
+            <input type="text" ng-model="username" required placeholder="Username" class="form-control" id='regUsermame'>
+
+          </div>
+          <div class"form-group">
+            <label for="email">Email*</label>
+            <input type="text" ng-model="email" required placeholder="email@example.com" class="form-control" id='regEmail'>
+            
+          </div>
+          <div class"form-group">
+            <label for="password">password*</label>
+            <input type="text" ng-model="password" required placeholder="Passowrd" class="form-control" id='regPassword'>
+            
+          </div>
+          <div class="form-group">
+              <div class="checkbox">
+
+                <label><input type="checkbox"> Teacher</label>
+
+              </div>
+          </div>
+          <br>
+          <button ng-click="register()" class="btn btn-primary">Register</button>
+        </form>
+      </div>
+      <div class="col-sm-6">
+      <form name='loginform' >
+        <div class="form-group">
+        <label for="ussername">Username:</label>
+        <input ng-model="username" type="text" required  placeholder="Enter username" class="form-control" id="username"> 
+        </div>
+
+        <span ng-show="loginform.username.$touched && loginform.username.$invalid">User name is required</span>
+
+         <div class="form-group">
+           <label for="pwd">Passowrd:</label>
+           <input type="text" ng-model='password'  required  placeholder="Enter password" class="form-control" id="pwd">
+         </div>
+        <span ng-show="loginform.password.$touched && loginform.password.$invalid">User name is required</span>
+
+        <button ng-click="submit()" class="btn btn-primary">Login</button>
+
+        
 
       </form>
+      </div>
+
+      </div>
     </div>
     
     <script>
