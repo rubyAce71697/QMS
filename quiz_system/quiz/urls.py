@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^quizes/',Quizes.as_view(),name='quizes'),
     url(r'^quizquestions/(?P<test_id>[A-Za-z0-9]+)/$',QuizQuestionsView.as_view()),
     url(r'^quizattempts/(?P<student_id>[A-Za-z0-9]+)/$',QuizAttempts.as_view()),
-    #url(r'^profile/$',StudentProfileView.as_view()),
+    url(r'^profile-data/$',StudentProfileView.as_view()),
     url(r'^responses/$',StudentResponsesSerializerView.as_view()),
     url(r'^home/',HomeTemplateView.as_view(),name='home'),
     url(r'^profile/',ProfileTemplateView.as_view(),name='profile')
