@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^login/$',UserLogin.as_view(),   name='login'),
 
     #url(r'^home/',home ,name='home'),
-    url(r'^logout/$',UserLogout.as_view()),
+    url(r'^logout-rest/$',UserLogout.as_view()),
     url(r'^detail/(?P<test_id>[0-9]+)/$', detail, name='detail'),
     url(r'^attempt/(?P<test_id>[0-9]+)/$', attempt, name='attempt'),
     url(r'^attempt/(?P<test_id>[0-9]+)/submit$', submit, name='submit'),
