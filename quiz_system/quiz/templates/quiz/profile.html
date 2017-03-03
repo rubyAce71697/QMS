@@ -24,14 +24,85 @@
         <li><a  ng-click="about()">About</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right" >
-        <li><a href="../logout">Logout</a></li>
+        <li><a href="javascript:void(0);" ng-click="logout()">Logout</a></li>
     </ul>
-</nav>
+    </nav>
 
+    <div class='row' style="margin-top:30px;">
+        <div class='col-sm-10 text-right'>
+            <button ng-click="edit()" class="btn btn-primary">Edit</button>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:30px;">
+
+    <form class='form-horizontal'>
+    <div class='col-sm-6'>
+      <div class="form-group">
+        <label  class="control-label col-sm-2 " for="firstName">Firstname:</label>
+        <div class="col-sm-6">
+            <input  disabled type="text" ng-model="firstName" class="form-control " id="firstName" >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="lastName">Lastname:</label>
+        <div class="col-sm-6">
+            <input disabled  type="text" ng-model="lastName" class="form-control" id="lastName" >
+        </div>
+      </div>  
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="Username">Username:</label>
+        <div class="col-sm-6">
+            <input disabled type="text" ng-model="username" class="form-control" id="username" >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="email">Email:</label>
+        <div class="col-sm-6">
+            <input disabled type="email" ng-model="email" class="form-control" id="email" >
+        </div>
+      </div>  
+
+
+        <div class="col-sm-8">
+            <label class="col-sm-10=6" hidden id='info' for="info"><font style="color: red"> * Please click update after updating the information</font></label>
+        </div>
+
+
+      </div>
+      <div class='col-sm-6'>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="School">School:</label>
+        <div class="col-sm-6">
+            <input disabled type="text" ng-model="school" class="form-control" id="school" >
+        </div>
+      </div>  
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="standard">Class:</label>
+        <div class="col-sm-6">
+            <input disabled type="text" ng-model="standard" class="form-control" id="standard" >
+        </div>
+      </div>  
+
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="doj">D.O.J.:</label>
+        <div class="col-sm-6">
+            <input disabled type="text" ng-model="doj" class="form-control" id="doj" >
+        </div>
+      </div>
+       <div class="form-group col-sm-6 pull-right" >
+        
+            <button hidden ng-click="submit()"  class="btn btn-primary" id='submit' >Update</button>        
+     </div>
+  
+
+      </div>
+    </form>
+    </div>
     
         
 
-      {% verbatim %} {{ data }} {% endverbatim %}
+     <!--  {% verbatim %} {{ data }} {% endverbatim %} -->
 
 
 
@@ -43,10 +114,18 @@
       app.controller('myCtrl',function($scope,$window,$http){
                         $http.defaults.xsrfCookieName = 'csrftoken';
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-        var quiz_res = $http.get('../profile-data/');
+        var quiz_res =$http.get('../profile-data/');
         quiz_res.success(function(data, status, headers, config){
           console.log(data)
           $scope.data = data;
+          $scope.firstName = data['student']['first_name']
+          $scope.lastName = data['student']['last_name']
+          $scope.username = data['student']['username']
+          $scope.email = data['student']['email']
+          $scope.school = data['school']
+          console.log(data['school'])
+          $scope.standard = data['standard']
+          $scope.doj = data['doj']
 
         } );
 
@@ -58,7 +137,51 @@
           $window.location.href = '../profile';
           $window.location.href;
         };
+
+        $scope.edit = function(){
+            console.log("edit clicked");
+            var submitEle = angular.element(document.querySelector('#submit'));
+            console.log(submitEle)
+            submitEle.removeAttr('hidden');
+            var submitEle = angular.element(document.querySelector('#firstName'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#lastName'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#school'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#standard'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#doj'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#username'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#email'));
+            console.log(submitEle)
+            submitEle.removeAttr('disabled');
+            var submitEle = angular.element(document.querySelector('#info'));
+            console.log(submitEle)
+            submitEle.removeAttr('hidden');
+
+        }
          console.log("changing to profile before");
+        $scope.submit = function(){
+            console.log('clicked')
+            
+        }
+        $scope.logout = function(){
+            console.log('logout clicked')
+            var logout_res = $http.get("../logout-rest");
+            logout_res.success(function(data,status,haders,config){
+                $window.location.href = '../'
+                $window.location.href;
+            });
+        }
 
       });
 
