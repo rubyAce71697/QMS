@@ -1,14 +1,25 @@
-var routeApp = angular.module('routeApp',[ui.router]);
+var routeApp = angular.module('quiz',[ui.router]);
+routeApp.config(['$stateProvider',function($stateProvider){
 
-routerApp.config(function($stateProvider, $urlRouterProvider){
+    var home = {
+        name : 'login',
+        url: '/quiz/login',
+        templateUrl: "login.html"
+    },
+    profile ={
+        name: 'profile',
+        url: '../profile',
+        templateUrl: "profile.html"
+    };
 
-    $urlRouterProvider.otherwise('/home')
-
-    $stateProvider
-
-        .state(home,{
-            url: 'quiz/login',
-            templateUrl: 'quiz/login.html'
-        })
-        
+    $stateProvider.state(home);
+    $stateProvider.state(profile);
+}])
+.run(['$state',function($state){
+    $state.transitionTo('home');
+}])
+.controller('navigationCtrl',function($scope,$state){
+    $scope.setPage = function($page){
+        $state.transitionTo(page);
+    };
 })

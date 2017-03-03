@@ -1,11 +1,111 @@
+<!Doctype html>
 <html>
-    <head>
-        <title> Profile </title>
-    </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
-    <body>
-        <h1>
-            This is the profile page
-        </h1>
-    </body>
+
+    <!-- CSS (load bootstrap) -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+        .navbar { border-radius:0; }
+    </style>
+
+    <!-- JS (load angular, ui-router, and our custom js file) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+
+
+  <body>
+    <div ng-app='quiz' ng-controller="myCtrl" >
+    <nav class="navbar navbar-inverse" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" ui-sref="#">{{ user }}</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li><a href='javascript:void(0);' ng-click="profile()">Profile</a></li>
+        <li><a  ng-click="about()">About</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" >
+        <li><a href="../logout">Logout</a></li>
+    </ul>
+</nav>
+    
+        
+
+      {% verbatim %} {{ data }} {% endverbatim %}
+      <table  class='table table-striped table-bordered table-hover table-condensed'> 
+        <caption> Total Quizes</caption>
+        <thead>
+          <th>Name</th>
+          <th>Date</th>
+        </thead>
+        <tbody>
+         
+          
+        <tr ng-repeat="x in totalQuizes">
+          <td>{% verbatim %} {{ x['quiz_title'] }} {% endverbatim %}</td>
+          <td>{% verbatim %} {{ x['quizDate'] }} {% endverbatim %}</td>
+          <td>
+        </tr>
+       </tbody>
+      </table>
+      
+      <br>
+      
+      <table  class='table table-striped table-bordered table-hover table-condensed'> 
+        <caption> Quizes attempted by you</caption>
+        <thead>
+          <th>Name</th>
+          <th>Date of Attempt</th>
+          <th>Date of Commencement</th>
+          <th>Score Obtained</th>
+        </thead>
+        <tbody>
+         
+          
+        <tr ng-repeat="x in quizesAttempted">
+          <td>{% verbatim %} {{ x['quiz']['quiz_title'] }} {% endverbatim %}</td>
+          <td>{% verbatim %} {{ x['attempt_date'] }} {% endverbatim %}</td>
+          <td>{% verbatim %} {{ x['quiz']['quizDate'] }} {% endverbatim %}</td>
+          <td>{% verbatim %} {{ x['score'] }} {% endverbatim %}</td>
+        </tr>
+       </tbody>
+      </table>
+
+
+
+    </div>
+    
+    <script>
+      var app = angular.module('quiz', []);
+      app.controller('myCtrl',function($scope,$window,$http){
+                        $http.defaults.xsrfCookieName = 'csrftoken';
+        $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+        var quiz_res = $http.get('../quizes/');
+        quiz_res.success(function(data, status, headers, config){
+          console.log(data)
+          $scope.totalQuizes = data;
+
+        } );
+
+        var att_res = $http.get('../userattempts/{{ user }}');
+        att_res.success(function(data,status,headers,config){
+          console.log(data)
+          $scope.quizesAttempted = data
+        });
+        console.log("changing to profile before");
+        $scope.profile = function(){
+          alert("called")
+          console.log('changing to profile');
+          $window.location.href = '../profile';
+          $window.location.href;
+        };
+         console.log("changing to profile before");
+
+      });
+
+ 
+
+     
+ 
+    </script>
+  </body>
 </html>

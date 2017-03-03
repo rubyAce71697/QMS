@@ -363,6 +363,10 @@ class HomeTemplateView(TemplateView):
     def get(self,request):
         return render(request,'quiz/home.html')
 
+class ProfileTemplateView(TemplateView):
+    def get(self,request):
+        return render(request,'quiz/profile.html')
+
 
 
 

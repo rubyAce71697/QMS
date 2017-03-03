@@ -2,6 +2,7 @@
 <html>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
+
     <!-- CSS (load bootstrap) -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style>
@@ -13,19 +14,20 @@
 
 
   <body>
+    <div ng-app='quiz' ng-controller="myCtrl" >
     <nav class="navbar navbar-inverse" role="navigation">
     <div class="navbar-header">
         <a class="navbar-brand" ui-sref="#">{{ user }}</a>
     </div>
     <ul class="nav navbar-nav">
-        <li><a ui-sref=="profile.html">Profile</a></li>
-        <li><a ui-sref="about">About</a></li>
+        <li><a href='javascript:void(0);' ng-click="profile()">Profile</a></li>
+        <li><a  ng-click="about()">About</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right" >
         <li><a href="../logout">Logout</a></li>
     </ul>
 </nav>
-    <div ng-app='quiz' ng-controller="myCtrl" >
+    
         
 
       {% verbatim %} {{ data }} {% endverbatim %}
@@ -74,7 +76,7 @@
     
     <script>
       var app = angular.module('quiz', []);
-      app.controller('myCtrl',function($scope,$http){
+      app.controller('myCtrl',function($scope,$window,$http){
                         $http.defaults.xsrfCookieName = 'csrftoken';
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
         var quiz_res = $http.get('../quizes/');
@@ -88,9 +90,21 @@
         att_res.success(function(data,status,headers,config){
           console.log(data)
           $scope.quizesAttempted = data
-        })
         });
-        
+        console.log("changing to profile before");
+        $scope.profile = function(){
+          alert("called")
+          console.log('changing to profile');
+          $window.location.href = '../profile';
+          $window.location.href;
+        };
+         console.log("changing to profile before");
+
+      });
+
+ 
+
+     
  
     </script>
   </body>
