@@ -9,6 +9,7 @@ from .models import StudentProfile,StudentQuizAttempts,StudentResponses,QuizInfo
 from .models import TeacherProfile
 from django.contrib.auth import login, logout,authenticate
 from datetime import datetime
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.fields import CurrentUserDefault
 from rest_framework import status,response,generics
@@ -17,8 +18,9 @@ from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerialize
 from serializers import StudentResponsesSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
+import json
 
-
+"""
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -38,6 +40,21 @@ def register(request):
     context['registered'] = registered
     template_url = 'quiz/register.html'
     return render(request,template_url,context)
+"""
+
+@api_view(('POST',))
+def register(request):
+    print request.data
+    obj = get_list_or_404(User, email= request.data.email,username = request.data.username)
+    print obj
+    return Response({"success":True})
+
+
+
+
+
+
+
 
 @login_required(login_url="/quiz/")
 def home(request):
@@ -211,6 +228,9 @@ def attempt(request, test_id):
 
 
 
+
+
+"""
 @login_required(login_url="/quiz/")
 def detail(request, test_id):
     print "--------------------------- in detail ------------------------------"
@@ -225,6 +245,27 @@ def detail(request, test_id):
     context['score'] = score
     print score.score
     return render(request, 'quiz/detail.html',context)
+"""
+
+
+#@login_required(login_url="/quiz/")
+
+@api_view(('GET',))
+def detail(request,test_id,format='json'):
+    print "------ in detail rest view -------------"
+    quiz = get_list_or_404(QuizQuestions,quiz_id=test_id)
+    quizserilaizer = QuizQuestionsSerializer(quiz,many=True)
+    #print quizserilaizer
+    answers = get_list_or_404(StudentResponses,quiz_id=test_id,student=request.user.username)
+    answersserializer = StudentResponsesSerializer(answers,many=True)
+    score = get_object_or_404(StudentQuizAttempts,student=request.user.username,quiz_id=test_id)
+    scoreserializer = QuizAttemptsSerializer(score)
+    context = {}
+    #context['quiz'] = quizserilaizer.data
+    context['answers'] = answersserializer.data
+    context['score'] = scoreserializer.data
+    print context
+    return Response(context)
 
 
 
@@ -364,11 +405,16 @@ class HomeTemplateView(TemplateView):
         return render(request,'quiz/home.html')
 
 class ProfileTemplateView(TemplateView):
+    
+    
     def get(self,request):
         return render(request,'quiz/profile.html')
 
 
-
+class QuizDetailTemplateView(TemplateView):
+    def get(self,request,test_id):
+        return render(request,'quiz/detail.html')
+    
 
 """
 {
