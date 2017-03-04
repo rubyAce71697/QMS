@@ -41,11 +41,6 @@ class StudentQuizAttempts(models.Model):
     def __unicode__(self):
         return self.quiz.quiz_title
 
-    
-
-
-
-   
 class QuizQuestions(models.Model):
     quiz = models.ForeignKey(QuizInfo)
     question = models.CharField(max_length = 200)

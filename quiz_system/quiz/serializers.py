@@ -22,17 +22,22 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         model = StudentProfile
         fields = '__all__'
 
-class StudentResponsesSerializer(serializers.ModelSerializer):
-    student = StudentProfileSerializer(read_only=True)
-    class Meta:
-        model = StudentResponses
-        fields = '__all__'
 
 
 class QuizQuestionsSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = QuizQuestions
-        fields = ('quiz','question','isMultipleChoice','choice_1','choice_2','choice_3','choice_4')
+        fields = ('quiz','question','isMultipleChoice','choice_1','choice_2','choice_3','choice_4','answer')
+
+class StudentResponsesSerializer(serializers.ModelSerializer):
+    #student = StudentProfileSerializer(read_only=True)
+    question = QuizQuestionsSerializer(read_only=True)
+    class Meta:
+        model = StudentResponses
+
+        exclude = ['student']
+
 
 class TeacherProfileSerializer(serializers.ModelSerializer):
 
@@ -51,4 +56,6 @@ class QuizAttemptsSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentQuizAttempts
         fields = ('quiz','attempt_date','score')
+
+
 
