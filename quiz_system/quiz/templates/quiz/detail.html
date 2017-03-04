@@ -1,81 +1,107 @@
+<!Doctype html>
 <html>
-    <head>
-        <title>
-            Answers
-        </title>
-        <style>
-            table {
-                border-collapse: 5 px;
-                width: 100%;
-                border-radius: 25 px;
-            }
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
-            th, td {
-                text-align: center;
-                padding: 8px;
-            }
 
-            tr{background-color: #f2f2f2}
+    <!-- CSS (load bootstrap) -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+        .navbar { border-radius:0; }
+    </style>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-            th {
-                background-color: #4CAF50;
-                color: white;
-            }
-        </style>
-    </head>
-    <body>
-        {% if user.is_authenticated %}
-            <table style="width:100%; border: none; background-color: white;">
-                <tr style="border: none; background-color: white ">
-                    <td style="border: none; background-color: white; text-align:left; ">Hi {{ user.username }} - This is the your attempt  </td>
-                    <td style="border: none; background-color: white; text-align:right; "><a href="{% url 'logout' %}"> Logout </a></td>
-                </tr>
-            </table>
-            <hr>
-             <table style="width:100%; border: none; background-color: white;">
-                <tr style="border: none; background-color: white ">
-                    <td style="border: none; background-color: white; text-align:left; ">Correct Answers: {{ score.score }} </td>
 
-                   
-                </tr>
-                <tr style="border: none; background-color: white ">
-                    <td style="border: none; background-color: white; text-align:left; ">Attempt Date: {{ score.attempt_date }} </td> 
-                </tr>
-                <tr style="border: none; background-color: white ">
-                    <td style="border: none; background-color: white; text-align:left; ">Quiz: {{ score.quiz }} </td> 
-                </tr>
-            </table>
+    <!-- JS (load angular, ui-router, and our custom js file) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+
+
+  <body>
+    <div ng-app='quiz' ng-controller="myCtrl" >
+    <nav class="navbar navbar-inverse" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" ui-sref="#">{{ user }}</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li><a href='javascript:void(0);' ng-click="profile()">Profile</a></li>
+        <li><a  ng-click="about()">About</a></li>
+    </ul>
+    <ul class="nav navbar-nav" >
+        <li><a href="../logout">Logout</a></li>
+    </ul>
+</nav>
+    
+      <div class='row'>
+        <div class='col-sm-6'>
+          <label> Quiz: </label> {% verbatim %} {{ quiz_title }} {% endverbatim %}
+          <br />
+
+          <label> Score Obtained: </label> {% verbatim %} {{ score }} {% endverbatim %}
+        </div>
+       <div class='col-sm-6'>
+          <label> Quiz Date: </label> {% verbatim %} {{ quiz_date }} {% endverbatim %}
+          <br>
+          <label> Attempt Date: </label> {% verbatim %} {{ attempt_date }} {% endverbatim %}
+          <br>
+        </div>
+      </div>
+      <div class="row" ng-repeat="x in answers">
+          <div class="panel panel-default">
+            <div class="panel-heading"><label>Q{% verbatim %}{{ x['id']}}. {{ x['question']['question'] }} {% endverbatim %}</label>  </div>
+            <div class="panel-body">
+              <div class='col-sm-6'>
+                <label> {% verbatim %} A.  {{ x['question']['choice_1'] }} {% endverbatim %} </label><br>
+                <label> {% verbatim %} B.  {{ x['question']['choice_2'] }} {% endverbatim %} </label><br>
+                <label> {% verbatim %} C.  {{ x['question']['choice_3'] }} {% endverbatim %} </label><br>
+                <label> {% verbatim %} D.  {{ x['question']['choice_4'] }} {% endverbatim %} </label><br>
+              </div>
+              <div class="col-sm-6">
+                <label> {% verbatim %} Correct Answer.  {{ x['question']['answer'] }} {% endverbatim %} </label><br>
+                <label> {% verbatim %} Your Answer.  {{ x['response'] }} {% endverbatim %} </label><br>
+              </div>
+            </div>
             
-            <br>
-            <br>
-        <table>
-        {% for i in quiz %}
-            <tr style="background-color: #4CAF50;text-align: left" ><td colspan="5" style="text-align: left">Q{{forloop.counter }}. {{ i.question }}</td></tr>
-            <tr ><td>A. {{ i.choice_1 }}</td>
-            <td>B. {{ i.choice_2 }}</td>
-            <td>C. {{ i.choice_3 }}</td>
-            <td>D. {{ i.choice_4 }}</td></tr>
-            <tr><td colspan="2" style="text-align: left">Correct Answer: {{ i.answer }}</td>
-                {% for j in answers %}
-                    {% if i.id == j.question_id %}
-                        {% if j.response.upper == i.answer.upper %}
-                            <td colspan="2" style="text-align: left; background-color: green">Your Answer: {{ j.response }} </td>
-                        {% else %}
-                            <td colspan="2" style="text-align: left; background-color: darkred">Your Answer: {{ j.response }} </td>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            <tr>
-            <tr></tr>
-        {% endfor %}
-        </table>
+        </div>
+
+      </div>
 
 
-        {% else %}
-            <h2> Please login</h2>
-            <a href="{% url 'login' %}"> Login </a>
-        {% endif %}
+    </div>
+    
+    <script>
+      var app = angular.module('quiz', []);
+      app.controller('myCtrl',function($scope,$window,$http){
+                        $http.defaults.xsrfCookieName = 'csrftoken';
+        $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+        var quiz_res = $http.get('../../detail-rest/2/');
+        quiz_res.success(function(data, status, headers, config){
+          $scope.quiz_title = data['score']['quiz']['quiz_title']
+          $scope.attempt_date = data['score']['attempt_date']
+          $scope.quiz_date = data['score']['quiz']['quizDate']
+          $scope.score = data['score']['score']
+          $scope.answers = data['answers']
 
+        } );
 
-    </body>
+        var att_res = $http.get('../userattempts/{{ user }}');
+        att_res.success(function(data,status,headers,config){
+          console.log(data)
+          $scope.quizesAttempted = data
+        });
+        console.log("changing to profile before");
+        $scope.profile = function(){
+          alert("called")
+          console.log('changing to profile');
+          $window.location.href = '../../profile';
+          $window.location.href;
+        };
+         console.log("changing to profile before");
+
+      });
+
+ 
+
+     
+ 
+    </script>
+  </body>
 </html>
