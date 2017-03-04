@@ -23,7 +23,7 @@
         <li><a href='javascript:void(0);' ng-click="profile()">Profile</a></li>
         <li><a  ng-click="about()">About</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right" >
+    <ul class="nav navbar-nav " >
         <li><a href="../logout">Logout</a></li>
     </ul>
 </nav>
@@ -57,6 +57,7 @@
           <th>Date of Attempt</th>
           <th>Date of Commencement</th>
           <th>Score Obtained</th>
+          <th>
         </thead>
         <tbody>
          
@@ -66,6 +67,7 @@
           <td>{% verbatim %} {{ x['attempt_date'] }} {% endverbatim %}</td>
           <td>{% verbatim %} {{ x['quiz']['quizDate'] }} {% endverbatim %}</td>
           <td>{% verbatim %} {{ x['score'] }} {% endverbatim %}</td>
+          <td><a href="../detail/{% verbatim %}{{x['quiz']['id'] }} {% endverbatim %}" id="{% verbatim %} {{ x['quiz']['id'] }} {% endverbatim %}">view<td>
         </tr>
        </tbody>
       </table>
