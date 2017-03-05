@@ -139,6 +139,13 @@
           var res = $http.post('register-rest/',data);
           res.success(function(data, status, headers, config) {
             console.log(data)
+            if (data['success']){
+              alert("Registration is successfull, please login to access account")
+
+            }
+            else{
+              alert(data['error'])
+            }
           });
 
      
