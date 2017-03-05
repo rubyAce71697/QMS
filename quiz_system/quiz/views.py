@@ -15,7 +15,7 @@ from rest_framework.fields import CurrentUserDefault
 from rest_framework import status,response,generics
 from rest_framework.response import Response
 from serializers import UserSerializer,QuizInfoSerializer,QuizQuestionsSerializer,QuizAttemptsSerializer,StudentProfileSerializer
-from serializers import StudentResponsesSerializer
+from serializers import StudentResponsesSerializer,TeacherSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 import json
@@ -223,8 +223,6 @@ class Home(LoginRequiredMixin,APIView):
         
 
 class UserAttempts(LoginRequiredMixin,APIView):
-
-    
     login_url = '/quiz/login/'
     def get(self,request,pk,format = 'json'):
         #quiz_attempted = StudentQuizAttempts.objects.select_related().filter(student_id__in=student_profile_id)
@@ -253,24 +251,75 @@ def attempt(request, test_id):
 
 
 
+@api_view(('GET',))
+def TeacherStudentDetailsView(request):
+    teacher_profile_obj = TeacherProfile.objects.all().filter(teacher = request.user)
+    teacher_student_obj = TeacherS.objects.all().filter(teacher__in=teacher_profile_obj)
+    print teacher_student_obj
+    for i in teacher_student_obj:
+        print i.student
+ 
+    teacher_student_obj_serializer = TeacherSerializer(teacher_student_obj,many=True)
+    print teacher_student_obj_serializer.data
+    usernames = []
+    for i in teacher_student_obj_serializer.data:
+        print i['student']['student']['username']
+        usernames.append( i['student']['student']['username'])
+    print usernames
+    quiz_attempted = StudentQuizAttempts.objects.all().filter(student__in=usernames)
+    print quiz_attempted.values()
+    #quiz_attempted = QuizAttemptsSerializer(quiz_attempted,many=True)
+    #print quiz_attempted.data
+
+    """
+    response dictionary
+    {
+        student: {
+                    first_name,last_name,email,standard,school
+                    quizes:[
+                        {
+                            quiz_id,quiz_title,attempt_date,score
+                        }
+                    ]
+
+                }
+    }
+    """
+    print "----- creating response ------"
+    response_dict = []
+    for i in teacher_student_obj_serializer.data:
+        obj = dict()
+        obj['username'] = i['student']['student']['username']
+        obj['first_name'] = i['student']['student']['first_name']
+        obj['last_name'] = i['student']['student']['last_name']
+        obj['school'] = i['student']['school']
+        obj['standard'] = i['student']['standard']
+        obj['email'] = i['student']['student']['email']
+        obj['quizes'] = []
+        
+        for i in quiz_attempted.values():
+            quiz_obj = {}
+            if i['student_id'] == obj['username']:
+                quiz_obj['quiz_id'] = i['quiz_id']
+                quiz_obj['score'] = i['score']
+                quiz_obj['attempt_date'] = i['attempt_date']
+            
+                obj['quizes'].append(quiz_obj)
+                
+        response_dict.append(obj)
 
 
-"""
-@login_required(login_url="/quiz/")
-def detail(request, test_id):
-    print "--------------------------- in detail ------------------------------"
-    quiz = get_list_or_404(QuizQuestions,quiz_id=test_id)
-    print quiz
-    answers = get_list_or_404(StudentResponses,quiz_id=test_id,student=request.user.username)
-    print answers
-    score = get_object_or_404(StudentQuizAttempts,student=request.user.username,quiz_id=test_id)
-    context  = dict()
-    context['quiz'] = quiz
-    context['answers'] = answers
-    context['score'] = score
-    print score.score
-    return render(request, 'quiz/detail.html',context)
-"""
+    print response_dict
+
+
+
+    return Response(response_dict)
+
+    
+
+
+
+
 
 
 #@login_required(login_url="/quiz/")
@@ -338,37 +387,7 @@ def submit(request,test_id):
     print foo
     return HttpResponseRedirect(reverse('home'))
 
-"""
-def user_login(request):
-    if request.method == 'POST':
-          username = request.POST['username']
-          password = request.POST['password']
-          
-          user = authenticate(username=username, password=password)
-          if user is not None:
-              if user.is_active:
-                  login(request, user)
-                  # Redirect to index page.
-                  return HttpResponseRedirect(reverse('home'))
-              else:
-                  # Return a 'disabled account' error message
-                  return HttpResponse("You're account is disabled.")
-          else:
-              # Return an 'invalid login' error message.
-              print  "invalid login details " + username + " " + password
-              context = {}
-              context['form'] = UserLoginForm()
-              return render(request,template_name,context)
-    
-    elif request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('home'))
-    else:
-        # the login is a  GET request, so just show the user the login form.
-        template_name = 'quiz/login.html'
-        context = {}
-        context['form'] = UserLoginForm()
-        return render(request,template_name,context)
-"""
+
 
 class UserLogin(APIView):
     context = dict()
@@ -425,9 +444,12 @@ class LoginTemplateView(TemplateView):
     form_class = UserForm
     template_name = 'quiz/login.html'
 
-class HomeTemplateView(TemplateView):
-    def get(self,request):
-        return render(request,'quiz/home.html')
+
+def HomeTemplateView(request):
+    if request.user.is_staff:
+        return render(request,'quiz/teacher_home.html')
+    return render(request,'quiz/home.html')
+    
 
 class ProfileTemplateView(TemplateView):
     
