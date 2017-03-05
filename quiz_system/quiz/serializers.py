@@ -8,19 +8,22 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username','first_name','last_name','email')
 
-
-class TeacherSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        fields = ('teacher','student')
-
-
-
 class StudentProfileSerializer(serializers.ModelSerializer):
     student = UserSerializer(read_only=True)
     class Meta:
         model = StudentProfile
         fields = '__all__'
+
+class TeacherSerializer(serializers.ModelSerializer):
+
+    student = StudentProfileSerializer(read_only=True)
+    class Meta:
+        model = TeacherS
+        fields = ('teacher','student')
+
+
+
+
 
 
 
