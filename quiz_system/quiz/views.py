@@ -19,6 +19,8 @@ from serializers import StudentResponsesSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 import json
+from datetime import date
+from django.db.models import Q
 
 """
 def register(request):
@@ -45,9 +47,32 @@ def register(request):
 @api_view(('POST',))
 def register(request):
     print request.data
-    obj = get_list_or_404(User, email= request.data.email,username = request.data.username)
-    print obj
-    return Response({"success":True})
+    obj = User.objects.all().filter(Q(email = request.data['email']) | Q(username = request.data['username']))
+    if obj:
+        return Response({"error":"THe username or email already exists.",
+        "success":False
+        })
+    new_user = User()
+    new_user.username = request.data['username']
+    new_user.email = request.data['email']
+    new_user.set_password(request.data['password'])
+    if request.data['teacher']:
+        new_user.is_staff = True
+        new_teacher = TeacherProfile()
+        new_teacher.doj = date.today()
+        new_teacher.teacher = new_user
+        new_user.save()
+        new_teacher.save()
+    else:
+        new_student = StudentProfile()
+        new_student.student = new_user
+        new_student.doj = date.today()
+        new_user.save()
+        new_student.save()
+    
+
+    return Response({"success":True,
+    "error": None})
 
 
 
