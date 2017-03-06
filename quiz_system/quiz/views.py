@@ -255,21 +255,23 @@ def attempt(request, test_id):
 def TeacherStudentDetailsView(request):
     teacher_profile_obj = TeacherProfile.objects.all().filter(teacher = request.user)
     teacher_student_obj = TeacherS.objects.all().filter(teacher__in=teacher_profile_obj)
-    print teacher_student_obj
+    #print teacher_student_obj
     for i in teacher_student_obj:
         print i.student
  
     teacher_student_obj_serializer = TeacherSerializer(teacher_student_obj,many=True)
-    print teacher_student_obj_serializer.data
+    #print teacher_student_obj_serializer.data
     usernames = []
     for i in teacher_student_obj_serializer.data:
         print i['student']['student']['username']
         usernames.append( i['student']['student']['username'])
-    print usernames
+    #print usernames
     quiz_attempted = StudentQuizAttempts.objects.all().filter(student__in=usernames)
     print quiz_attempted.values()
     #quiz_attempted = QuizAttemptsSerializer(quiz_attempted,many=True)
     #print quiz_attempted.data
+    quiz_info = QuizInfo.objects.all().filter(id__in=quiz_attempted.values('quiz')).distinct()
+    print quiz_info
 
     """
     response dictionary
@@ -301,15 +303,18 @@ def TeacherStudentDetailsView(request):
             quiz_obj = {}
             if i['student_id'] == obj['username']:
                 quiz_obj['quiz_id'] = i['quiz_id']
+                quiz_title = quiz_info.filter(pk=quiz_obj['quiz_id'])
+                quiz_obj['quiz_title'] = quiz_title.values('quiz_title')[0]['quiz_title']
                 quiz_obj['score'] = i['score']
                 quiz_obj['attempt_date'] = i['attempt_date']
             
                 obj['quizes'].append(quiz_obj)
+        obj['no_of_quizes'] = len(obj['quizes'])
                 
         response_dict.append(obj)
 
 
-    print response_dict
+    #print response_dict
 
 
 

@@ -50,6 +50,66 @@
         </tr>
        </tbody>
       </table>
+      <!--
+      <div class='row' ng-repeat="student in students"> 
+        <div class='col-sm-6'>
+          <label> Student: </label> {% verbatim %} {{ student['first_name'] }} {{ student['last_name'] }} {% endverbatim %}
+          <br />
+
+          <label> Class: </label> {% verbatim %} {{ student['standard'] }} {% endverbatim %}
+          <br />
+
+          <label> School: </label> {% verbatim %} {{ student['school'] }} {% endverbatim %}
+          
+        </div>
+        <div class='col-sm-6'>
+            <label> No. of quizes attempted: </label> {% verbatim %} {{ student['no_of_quizes'] }} {% endverbatim %}
+            
+        </div>
+      </div>
+      -->
+      <div class="row" ng-repeat="student in students">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <!--<div class='col-sm-6'>-->
+                <label> Student: </label> {% verbatim %} {{ student['username'] }} {% endverbatim %}
+                <br />
+                <label> Student: </label> {% verbatim %} {{ student['first_name'] }} {{ student['last_name'] }} {% endverbatim %}
+                <br />
+                <label> Class: </label> {% verbatim %} {{ student['standard'] }} {% endverbatim %}
+                <br />
+                <label> School: </label> {% verbatim %} {{ student['school'] }} {% endverbatim %}
+                <br />
+              <!--</div>-->
+              <!--<div class='col-sm-6'>-->
+                <label> No. of quizes attempted: </label> {% verbatim %} {{ student['no_of_quizes'] }} {% endverbatim %}
+              <!--</div>-->
+            </div>
+            <div class="panel-body">
+              <table  class='table table-striped table-bordered table-hover table-condensed'> 
+                <caption> Quizes attempted by {% verbatim %} {{ student['first_name'] }} {{ student['last_name'] }} {% endverbatim %}</caption>
+                <thead>
+                  <th>Name</th>
+                  <th>Date of Attempt</th>
+                  <th>Score Obtained</th>
+                  
+                </thead>
+                <tbody>
+                
+                  
+                <tr ng-repeat="x in student['quizes']">
+                  <td>{% verbatim %} {{ x['quiz_title'] }} {% endverbatim %}</td>
+                  <td>{% verbatim %} {{ x['attempt_date'] }} {% endverbatim %}</td>
+                  <td>{% verbatim %} {{ x['score'] }} {% endverbatim %}</td>
+                  <!--<td><a href="../detail/{% verbatim %}{{'id'] }} {% endverbatim %}" id="{% verbatim %} {{ x['quiz']['id'] }} {% endverbatim %}">view<td>-->
+                </tr>
+              </tbody>
+              </table>
+
+            </div>
+        </div>
+    </div>
+
       
 
 
@@ -71,6 +131,7 @@
         var att_res = $http.get('../teacher-student-rest/');
         att_res.success(function(data,status,headers,config){
           console.log(data)
+          $scope.students = data;
           
         });
         console.log("changing to profile before");
